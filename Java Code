@@ -1,0 +1,182 @@
+import java.util.Scanner;
+//AccountHOlder Class
+class AccountHOlder {
+  protected String name = "--";
+  protected String phone = "--";
+  protected String address = "--";
+  public void set_details() {
+      Scanner scand = new Scanner(System.in);
+      System.out.println("Name : ");
+	  name = scand.nextLine();
+	  System.out.println("Phone : ");
+	  phone = scand.nextLine();
+	  System.out.println("address : ");
+	  address = scand.nextLine();
+  }
+  public void get_details() {
+      System.out.println("Name = "+name);
+      System.out.println("Phone = "+phone);
+      System.out.println("Address = "+address);
+      
+  }
+}
+//Account Class
+class Account {
+   double initialBalance;
+   // Default constructor initialising the initialBalance
+   public Account() {
+      initialBalance = 500;
+   }
+   public Account(double initialBalance) {
+      setInitialBalance(initialBalance);
+   }
+   public double getInitialBalance() {
+      return initialBalance;
+   }
+   public void setInitialBalance(double initialBalance) {
+       if (initialBalance >= 500) {
+        this.initialBalance = initialBalance;
+       }
+   }
+   public void credit(double amount) {
+       if (amount > 0) {
+        this.initialBalance += amount;
+       }
+   }
+   public void debit(double amount) {
+       if (this.initialBalance - amount > 500) {
+          this.initialBalance -= amount;
+       }
+       else
+       {
+		 System.out.print("Debit amount exceeded account balance. Your account must have minimum 500. Try Again");
+		 System.out.print("\n");
+		 this.initialBalance = initialBalance;
+	  } // end if
+	  
+   }
+}
+// IS-A relationship between SavingsAccount class & Account class
+class SavingsAccount extends Account {
+   double interestRate;
+   public SavingsAccount(int initialBalance, double interestRate) {
+      super(initialBalance);
+      // For assigning the interestRate value
+      this.interestRate = interestRate;
+   }
+   public double calculateInterest() {
+      return (getInitialBalance() * interestRate) / 100;
+   }
+   public String toString() {
+      return "SavingsAccount interestRate= " + interestRate + "%\nBalance= RM " + initialBalance;
+   }
+}
+// IS-A relationship between CheckingAccount class & Account class
+class CheckingAccount extends Account {
+   double feeCharged;
+   public CheckingAccount(int initialBalance, double feeCharged) {
+      super(initialBalance);
+      // For assigning the feeCharged value
+      this.feeCharged = feeCharged;
+   }
+   public void credit(int amount) {
+       if (amount > 0) {
+          this.initialBalance +=amount;
+       }
+   }
+   public void debit(int amount) {
+       if (this.initialBalance - amount - feeCharged > 500) {
+          this.initialBalance -= (amount + feeCharged);
+       }
+       else
+       {
+		 System.out.print("Debit amount exceeded account balance. Your account must have minimum 500. Try again");
+		 System.out.print("\n");
+		 this.initialBalance -= feeCharged;
+	  } 
+   }
+   public String toString() {
+       return "CheckingAccount feeCharged= RM " + feeCharged + "\nBalance= RM " + initialBalance;
+   }
+}
+//This class contains main method & this class will create objects of SavingsAccount & CurrentAccount.
+public class Main {
+   public static void main(String[] args) {
+        AccountHOlder accountholder = new AccountHOlder();
+		Scanner scan = new Scanner(System.in);
+
+		System.out.println("Wlcome TO ABC Banking System ");
+		System.out.println();
+		
+	        	accountholder.set_details();
+			    SavingsAccount savingsAccount = new SavingsAccount(500, 10);
+                CheckingAccount checkingAccount= new CheckingAccount(1000,5);
+                savingsAccount.credit(savingsAccount.calculateInterest());
+                
+                Account account[] = new Account[2];
+                account[0] = savingsAccount;
+                account[1] = checkingAccount;
+                SavingsAccount acc = (SavingsAccount) account[0];
+                CheckingAccount acc2 = (CheckingAccount) account[1];
+                
+			    
+
+       //Creating Menu
+		while(true){
+			System.out.println("------------------------------------------------------------------");
+			System.out.println("View Account Details [1]");
+			System.out.println("Deposit To Saving Account [2]");
+			System.out.println("Withdraw From Saving Account [3]");
+			System.out.println("Deposit To Checking Account [4]");
+			System.out.println("Withdraw From Checking Account [5]");
+			System.out.println("Check balance after calculating Interest of  Saving Account [6]");
+			System.out.println("To Exit [0]");
+			System.out.println("------------------------------------------------------------------");
+
+			System.out.println();
+			System.out.println("Enter your choice::");
+			int choice = scan.nextInt();
+
+			switch(choice){
+			case 1: 
+			    accountholder.get_details();
+			    System.out.println(savingsAccount);
+                System.out.println(checkingAccount);
+			    break;
+			case 2: 
+			    System.out.println("Enter the Deposit amount: RM ");
+                acc.credit(scan.nextInt());
+                System.out.println("The Balance after Deposit: "+acc.getInitialBalance());
+			    
+			    break;
+			case 3: 
+			    System.out.println("Enter Withdraw amount: RM ");
+                acc.debit(scan.nextInt());
+                System.out.println("The Balance after Withdraw:RM  "+acc.getInitialBalance());
+			    
+			   break;
+			case 4: 
+			    System.out.println("Enter the Deposit amount: RM ");
+                acc2.credit(scan.nextInt());
+                System.out.println("The Balance after Deposit: "+acc2.getInitialBalance());
+			    break;
+			case 5: 
+			    System.out.println("Enter Withdraw amount: RM ");
+                acc2.debit(scan.nextInt());
+                System.out.println("The Balance after Withdraw:RM  "+acc2.getInitialBalance());
+			    
+			    break;
+			case 6: 
+			    acc.credit(acc.calculateInterest());
+                System.out.println(acc);
+			    
+			    break;
+			case 0: System.out.println("Thanks for Using Our System. Happy Banking ");
+			System.exit(0);
+			break;
+			default: System.out.println("Incorrect input!!! Please re-enter choice from our menu");
+			}
+		}
+       
+   }
+}
